@@ -1,0 +1,14 @@
+# The main pipeline for synapse_ingestion
+
+resources:
+  pipelines:
+    synapse_ingestion_etl:
+      name: synapse_ingestion_etl
+      catalog: ${var.catalog}
+      schema: ${var.schema}
+      serverless: true
+      root_path: "."
+
+      libraries:
+        - glob:
+            include: transformations/**
