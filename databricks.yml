@@ -14,9 +14,18 @@ variables:
     description: The catalog to use
   schema:
     description: The schema to use
+  synapse_server:
+    description: Synapse workspace server hostname
+    default: jlewis-synapse-workspace.sql.azuresynapse.net
+  synapse_database:
+    description: Synapse dedicated SQL pool database name
+    default: jlewisdedicatedsqlpool
+  synapse_credential:
+    description: Databricks Access Connector credential name for Synapse
+    default: azure-synapse
 
 targets:
-  dev:
+  sandbox:
     # The default target uses 'mode: development' to create a development copy.
     # - Deployed resources get prefixed with '[dev my_user_name]'
     # - Any job schedules and triggers are paused by default.
@@ -24,18 +33,26 @@ targets:
     mode: development
     default: true
     workspace:
-      host: https://adb-1156931321930036.16.azuredatabricks.net
+      host: https://adb-562730884037876.16.azuredatabricks.net/
     variables:
-      catalog: dev_workspace
+      catalog: sandbox
+      schema: ${workspace.current_user.short_name}
+  dev:
+    mode: development
+    default: true
+    workspace:
+      host: https://adb-562730884037876.16.azuredatabricks.net/
+    variables:
+      catalog: sandbox
       schema: ${workspace.current_user.short_name}
   prod:
     mode: production
     workspace:
-      host: https://adb-1156931321930036.16.azuredatabricks.net
+      host: https://adb-562730884037876.16.azuredatabricks.net/
       # We explicitly deploy to /Workspace/Users/jeff.lewis@databricks.com to make sure we only have a single copy.
       root_path: /Workspace/Users/jeff.lewis@databricks.com/.bundle/${bundle.name}/${bundle.target}
     variables:
-      catalog: dev_workspace
+      catalog: prod
       schema: prod
     permissions:
       - user_name: jeff.lewis@databricks.com

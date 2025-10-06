@@ -1,0 +1,25 @@
+# Synapse Ingestion ETL Pipeline
+# Multi-layer medallion architecture: Bronze → Silver → Gold
+# Ingests 8 tables from Azure Synapse and creates analytics-ready datasets
+
+resources:
+  pipelines:
+    synapse_ingestion_etl:
+      name: synapse_ingestion_etl
+      catalog: ${var.catalog}
+      schema: ${var.schema}
+      serverless: true
+      root_path: "."
+      
+      # Pipeline configuration parameters for Synapse connection
+      configuration:
+        synapse_server: ${var.synapse_server}
+        synapse_database: ${var.synapse_database}
+        synapse_credential: ${var.synapse_credential}
+      
+      # Include all transformation files
+      libraries:
+        - glob:
+            include: utilities/**
+        - glob:
+            include: transformations/**
